@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Online Work Morocco</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+body{background:#f8f9fc;}
+.header{background:linear-gradient(135deg,#5b4bf6,#7c3aed);color:white;padding:28px 20px;text-align:center;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:rgba(255,255,255,0.1);border-radius:50%;}
+.logo{font-size:24px;font-weight:700;z-index:2;position:relative;}
+.level-badge{background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);padding:7px 18px;border-radius:25px;font-size:14px;display:inline-block;margin:8px 0;border:1px solid rgba(255,255,255,0.3);}
+.balance{font-size:42px;font-weight:700;margin:12px 0;}
+.progress-bar{background:rgba(255,255,255,0.25);height:12px;border-radius:10px;overflow:hidden;margin-top:12px;max-width:300px;margin:12px auto 0;}
+.progress{height:100%;background:white;border-radius:10px;transition:0.6s;}
+.pro-banner{background:linear-gradient(135deg,#10b981,#059669);color:white;padding:20px;border-radius:16px;margin:15px;box-shadow:0 5px 20px rgba(16,185,129,0.3);}
+.pro-banner h3{font-size:19px;margin-bottom:8px;}
+.pro-banner p{font-size:14px;margin-bottom:12px;opacity:0.95;}
+.prices{display:flex;justify-content:space-around;text-align:center;font-size:13px;background:rgba(255,255,255,0.15);padding:12px;border-radius:10px;}
+.container{padding:18px;padding-bottom:110px;}
+.task-card{background:white;border-radius:18px;padding:20px;margin:14px 0;display:flex;align-items:center;box-shadow:0 5px 20px rgba(0,0,0,0.07);transition:0.3s;border-right:4px solid #5b4bf6;}
+.task-card:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(91,75,246,0.15);}
+.task-icon{font-size:48px;margin-left:18px;}
+.task-info{flex:1;}
+.task-info h3{font-size:17px;margin-bottom:6px;font-weight:700;}
+.reward{color:#5b4bf6;font-weight:700;font-size:20px;}
+.btn{background:linear-gradient(135deg,#5b4bf6,#7c3aed);color:white;border:none;padding:12px 26px;border-radius:12px;cursor:pointer;font-weight:700;font-size:15px;}
+.footer{text-align:center;padding:25px;color:#aaa;font-size:13px;border-top:1px solid #e5e7eb;margin-top:20px;}
+.nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:14px 0;border-top:1px solid #e5e7eb;box-shadow:0 -4px 20px rgba(0,0,0,0.08);}
+.nav a{text-decoration:none;color:#9ca3af;text-align:center;font-size:12px;font-weight:600;}
+.nav a.active{color:#5b4bf6;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">💼 Online Work Morocco</div>
+  <div class="level-badge">المستوى: <span id="level">مبتدئ</span></div>
+  <div class="balance"><span id="balance">0</span> درهم</div>
+  <p style="font-size:14px;opacity:0.9;">المتبقي للمستوى الجاي: <span id="next">100</span> درهم</p>
+  <div class="progress-bar"><div class="progress" id="progress" style="width:0%"></div></div>
+</div>
+
+<div class="pro-banner">
+  <h3>💼 طريقة سهلة للعمل من المنزل</h3>
+  <p>المسمى الوظيفي: إكمال مهام أونلاين (دوام جزئي أو كامل)</p>
+  <div class="prices">
+    <div><b>1 ساعة</b><br>20 درهم</div>
+    <div><b>2 ساعات</b><br>50 درهم</div>
+    <div><b>5 ساعات</b><br>120 درهم</div>
+  </div>
+  <p style="font-size:12px;margin-top:10px;text-align:center;">✅ الدفع مضمون يوميا عبر Orange Money - CIH - Wafacash</p>
+</div>
+
+<div class="container">
+  <h3 style="margin:18px 0;font-weight:700;">المهام المتاحة <span id="taskCount">0/5</span></h3>
+
+  <div class="task-card">
+    <div class="task-icon">📹</div>
+    <div class="task-info">
+      <h3>مشاهدة فيديو إعلان</h3>
+      <p style="color:#6b7280;font-size:14px;">مضاعف الربح: x<span id="mult1">1</span></p>
+    </div>
+    <div><div class="reward">+<span id="rew1">8</span></div><button class="btn" onclick="completeTask(1)">إكمال</button></div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-icon">📱</div>
+    <div class="task-info">
+      <h3>مشاركة على الواتساب</h3>
+      <p style="color:#6b7280;font-size:14px;">مضاعف الربح: x<span id="mult2">1</span></p>
+    </div>
+    <div><div class="reward">+<span id="rew2">5</span></div><button class="btn" onclick="completeTask(2)">إكمال</button></div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-icon">📝</div>
+    <div class="task-info">
+      <h3>استبيان يومي</h3>
+      <p style="color:#6b7280;font-size:14px;">مضاعف الربح: x<span id="mult3">1</span></p>
+    </div>
+    <div><div class="reward">+<span id="rew3">15</span></div><button class="btn" onclick="completeTask(3)">إكمال</button></div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-icon">🛍️</div>
+    <div class="task-info">
+      <h3>زيارة متجر شريك</h3>
+      <p style="color:#6b7280;font-size:14px;">مضاعف الربح: x<span id="mult4">1</span></p>
+    </div>
+    <div><div class="reward">+<span id="rew4">12</span></div><button class="btn" onclick="completeTask(4)">إكمال</button></div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-icon">👥</div>
+    <div class="task-info">
+      <h3>دعوة صديق</h3>
+      <p style="color:#6b7280;font-size:14px;">مضاعف الربح: x<span id="mult5">1</span></p>
+    </div>
+    <div><div class="reward">+<span id="rew5">30</span></div><button class="btn" onclick="completeTask(5)">دعوة</button></div>
+  </div>
+
+  <div class="footer">
+    © 2026 Online Work Morocco<br>
+    المنصة الأولى للعمل عن بعد في المغرب
+  </div>
+</div>
+
+<div class="nav">
+  <a href="Tasks.html" class="active">🏠<br>الرئيسية</a>
+  <a href="profil.html">💰<br>السحب</a>
+  <a href="#" onclick="logout()">🚪<br>خروج</a>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA6fo63qKcstFX8xFhGUD5wIRprabL0q
