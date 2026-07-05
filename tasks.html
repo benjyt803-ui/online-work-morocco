@@ -1,11 +1,109 @@
 
-<div style="background:linear-gradient(135deg,#10b981,#059669);color:white;padding:20px;border-radius:16px;margin:15px;box-shadow:0 5px 20px rgba(16,185,129,0.3);">
-  <h3 style="font-size:19px;margin-bottom:8px;">💼 طريقة سهلة للعمل من المنزل</h3>
-  <p style="font-size:14px;margin-bottom:12px;opacity:0.95;">المسمى الوظيفي: إكمال مهام أونلاين (دوام جزئي أو كامل)</p>
-  <div style="display:flex;justify-content:space-around;text-align:center;font-size:13px;background:rgba(255,255,255,0.15);padding:12px;border-radius:10px;">
-    <div><b>1 ساعة</b><br>20 درهم</div>
-    <div><b>2 ساعات</b><br>50 درهم</div>
-    <div><b>5 ساعات</b><br>120 درهم</div>
-  </div>
-  <p style="font-size:12px;margin-top:10px;text-align:center;">✅ الدفع مضمون يوميا عبر Orange Money - CIH - Wafacash</p>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المهام</title>
+<style>
+  body{font-family:'Cairo',sans-serif;background:#f5f5f5;margin:0;padding:20px}
+  .header{background:linear-gradient(135deg, #00aaff 0%, #0077cc 100%);color:white;padding:20px;border-radius:15px;margin-bottom:20px}
+  .task-box{background:white;padding:20px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);margin-bottom:15px;text-align:center}
+  .task-box h3{margin:0;color:#00aaff}
+  .task-box p{font-size:24px;font-weight:700;color:#333;margin:10px 0}
+  button{width:100%;padding:14px;background:#00aaff;color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px}
+  .logout{background:#ff4444;margin-top:20px}
+  .timer{font-size:32px;font-weight:700;color:#00aaff;text-align:center;margin:20px 0}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h2>طريقة سهلة للعمل من المنزل</h2>
+  <p style="font-size:13px">المهمة الوظيفية: اكمال مهام اونلاين (بدوام جزئي او كامل)</p>
+  <p style="font-size:12px">✅ الدفع مضمون يوميا عبر Orange Money - CIH - Wafacash</p>
 </div>
+
+<div id="chooseTask">
+  <div class="task-box" onclick="startTask(1,20)">
+    <h3>1 ساعة</h3>
+    <p>20 درهم</p>
+  </div>
+  <div class="task-box" onclick="startTask(2,50)">
+    <h3>2 ساعات</h3>
+    <p>50 درهم</p>
+  </div>
+  <div class="task-box" onclick="startTask(5,120)">
+    <h3>5 ساعات</h3>
+    <p>120 درهم</p>
+  </div>
+</div>
+
+<div id="workArea" class="hidden">
+  <div class="task-box">
+    <h3>الوقت المتبقي</h3>
+    <div class="timer" id="timer">00:00:00</div>
+    <button onclick="finishTask()">انهاء المهمة واستلام الارباح</button>
+  </div>
+</div>
+
+<button class="logout" onclick="logout()">تسجيل الخروج</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA6fo63qKcstFX8xFhGUD5wIRprabL0qso",
+    authDomain: "shein-maroc-app.firebaseapp.com",
+    projectId: "shein-maroc-app",
+    storageBucket: "shein-maroc-app.firebasestorage.app",
+    messagingSenderId: "105488018363",
+    appId: "1:105488018363:web:04595ef4d6f2dcff2ab29e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // حماية: الى ماداخلش يرجعو لصفحة الدخول
+  onAuthStateChanged(auth, (user) => {
+    if (!user) window.location.href = "Login.html";
+  });
+
+  let timeLeft = 0;
+  let timerInterval;
+
+  window.startTask = function(hours, money){
+    timeLeft = hours * 3600; // تحويل للثواني
+    document.getElementById('chooseTask').classList.add('hidden');
+    document.getElementById('workArea').classList.remove('hidden');
+    
+    timerInterval = setInterval(() => {
+      let h = Math.floor(timeLeft / 3600);
+      let m = Math.floor((timeLeft % 3600) / 60);
+      let s = timeLeft % 60;
+      document.getElementById('timer').innerText = 
+        `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      timeLeft--;
+      if(timeLeft < 0){
+        clearInterval(timerInterval);
+        alert(`مبروك! ربحتي ${money} درهم`);
+        location.reload();
+      }
+    }, 1000);
+  }
+
+  window.finishTask = function(){
+    clearInterval(timerInterval);
+    alert("تم انهاء المهمة بنجاح");
+    location.reload();
+  }
+
+  window.logout = async function(){
+    await signOut(auth);
+    window.location.href = "Login.html";
+  }
+</script>
+</body>
+</html>
