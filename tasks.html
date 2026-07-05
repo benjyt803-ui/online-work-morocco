@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -7,13 +6,16 @@
 <title>المهام</title>
 <style>
   body{font-family:'Cairo',sans-serif;background:#f5f5f5;margin:0;padding:20px}
-  .header{background:linear-gradient(135deg, #00aaff 0%, #0077cc 100%);color:white;padding:20px;border-radius:15px;margin-bottom:20px}
-  .task-box{background:white;padding:20px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);margin-bottom:15px;text-align:center}
-  .task-box h3{margin:0;color:#00aaff}
-  .task-box p{font-size:24px;font-weight:700;color:#333;margin:10px 0}
+  .header{background:linear-gradient(135deg, #00aaff 0%, #0077cc 100%);color:white;padding:20px;border-radius:15px;margin-bottom:20px;text-align:center}
+  .balance-box{background:#fff;padding:15px;border-radius:15px;margin-bottom:15px;text-align:center;border:2px solid #00aaff}
+  .balance-box h4{margin:0;color:#666;font-size:14px}
+  .balance-box p{margin:5px 0;font-size:24px;font-weight:700;color:#00aaff}
+  .task-box{background:white;padding:25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);margin-bottom:15px;text-align:center;cursor:pointer}
+  .task-box h3{margin:0;color:#00aaff;font-size:18px}
+  .task-box p{font-size:28px;font-weight:700;color:#333;margin:10px 0}
   button{width:100%;padding:14px;background:#00aaff;color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px}
   .logout{background:#ff4444;margin-top:20px}
-  .timer{font-size:32px;font-weight:700;color:#00aaff;text-align:center;margin:20px 0}
+  .timer{font-size:36px;font-weight:700;color:#00aaff;text-align:center;margin:20px 0}
   .hidden{display:none}
 </style>
 </head>
@@ -21,8 +23,12 @@
 
 <div class="header">
   <h2>طريقة سهلة للعمل من المنزل</h2>
-  <p style="font-size:13px">المهمة الوظيفية: اكمال مهام اونلاين (بدوام جزئي او كامل)</p>
-  <p style="font-size:12px">✅ الدفع مضمون يوميا عبر Orange Money - CIH - Wafacash</p>
+  <p style="font-size:13px">المهمة الوظيفية: اكمال مهام اونلاين</p>
+</div>
+
+<div class="balance-box">
+  <h4>رصيدك الحالي</h4>
+  <p id="balance">0 درهم</p>
 </div>
 
 <div id="chooseTask">
@@ -53,6 +59,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyA6fo63qKcstFX8xFhGUD5wIRprabL0qso",
@@ -65,17 +72,29 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-
-  // حماية: الى ماداخلش يرجعو لصفحة الدخول
-  onAuthStateChanged(auth, (user) => {
-    if (!user) window.location.href = "Login.html";
-  });
-
+  const db = getFirestore(app);
+  let userId = null;
   let timeLeft = 0;
   let timerInterval;
+  let currentMoney = 0;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) window.location.href = "Login.html";
+    userId = user.uid;
+    loadBalance();
+  });
+
+  async function loadBalance(){
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists()){
+      document.getElementById('balance').innerText = docSnap.data().balance + " درهم";
+    }
+  }
 
   window.startTask = function(hours, money){
-    timeLeft = hours * 3600; // تحويل للثواني
+    currentMoney = money;
+    timeLeft = hours * 3600;
     document.getElementById('chooseTask').classList.add('hidden');
     document.getElementById('workArea').classList.remove('hidden');
     
@@ -88,16 +107,21 @@
       timeLeft--;
       if(timeLeft < 0){
         clearInterval(timerInterval);
-        alert(`مبروك! ربحتي ${money} درهم`);
-        location.reload();
+        saveEarnings();
       }
     }, 1000);
   }
 
+  async function saveEarnings(){
+    const docRef = doc(db, "users", userId);
+    await setDoc(docRef, {balance: increment(currentMoney)}, {merge: true});
+    alert(`مبروك! تم اضافة ${currentMoney} درهم لرصيدك`);
+    location.reload();
+  }
+
   window.finishTask = function(){
     clearInterval(timerInterval);
-    alert("تم انهاء المهمة بنجاح");
-    location.reload();
+    saveEarnings();
   }
 
   window.logout = async function(){
