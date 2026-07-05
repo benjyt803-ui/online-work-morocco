@@ -19,11 +19,25 @@ button{width:100%;padding:12px;background:#00bfff;color:white;border:none;border
   <input type="email" id="email" placeholder="البريد الإلكتروني">
   <input type="password" id="motdepasse" placeholder="كلمة السر">
   <button onclick="registre()">تسجيل</button>
+  <div class="boite">
+  <h2>إنشاء حساب جديد</h2>
+  <input type="text" id="nom" placeholder="الاسم الكامل">
+  <input type="email" id="email" placeholder="الإيميل">
+  <input type="password" id="motdepasse" placeholder="كلمة السر">
+  <button onclick="registre()">تسجيل</button>
+  
+  <hr style="margin:15px 0;border:none;border-top:1px solid #ddd;">
+  <p style="text-align:center;font-size:13px;color:#666;">أو</p>
+  
+  <button onclick="loginWithGoogle()" style="width:100%;padding:14px;background:white;border:2px solid #ddd;border-radius:12px;margin-top:8px;font-weight:700;color:#333;">
+    <img src="https://www.google.com/favicon.ico" style="width:18px;vertical-align:middle;margin-left:8px;">
+    المتابعة مع Google
+  </button>
 </div>
-
-<script type="module">
+</div>
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -38,17 +52,41 @@ button{width:100%;padding:12px;background:#00bfff;color:white;border:none;border
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
 
+  // التسجيل بالإيميل
   window.registre = async function(){
     const nom = document.getElementById('nom').value;
     const email = document.getElementById('email').value;
     const motdepasse = document.getElementById('motdepasse').value;
-    
-    const userCredential = await createUserWithEmailAndPassword(auth, email, motdepasse);
-    await setDoc(doc(db, "users", userCredential.user.uid), {name: nom, email: email, balance: 0});
-    alert("تم التسجيل بنجاح!");
-    window.location.href = "tâches.html";
+
+    try{
+      const userCredential = await createUserWithEmailAndPassword(auth, email, motdepasse);
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        name: nom,
+        email: email,
+        balance: 0,
+        createdAt: new Date()
+      });
+      alert("تم التسجيل بنجاح");
+      window.location.href = "Tasks.html";
+    } catch(error){ alert(error.message); }
+  }
+
+  // التسجيل بجوجل
+  window.loginWithGoogle = async function(){
+    try{
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      await setDoc(doc(db, "users", user.uid), {
+        name: user.displayName,
+        email: user.email,
+        balance: 0,
+        createdAt: new Date()
+      }, {merge: true});
+      window.location.href = "Tasks.html";
+    } catch(error){ alert(error.message); }
   }
 </script>
-</body>
-</html>
+
+
