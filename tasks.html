@@ -5,31 +5,42 @@
 <title>المهام</title>
 <style>
     body { font-family: Arial; background: #f2f2f2; text-align: center; padding: 20px; }
-    .box { background: white; padding: 20px; border-radius: 10px; max-width: 400px; margin: 10px auto; box-shadow: 0 0 10px #ccc; }
-    #timer { font-size: 30px; font-weight: bold; color: red; margin: 15px 0; }
+    .boite { background: white; padding: 20px; border-radius: 10px; max-width: 400px; margin: 10px auto; box-shadow: 0 0 10px #ccc; }
+    #minuteur { font-size: 30px; font-weight: bold; color: red; margin: 15px 0; }
     button { background: #28a745; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 8px; cursor: pointer; margin: 5px; width: 90%; }
-    button:disabled { background: gray; }
-    #logoutBtn { background: red; }
-    a { text-decoration: none; color: #007bff; display: block; margin-top: 10px; }
+    button:disabled { background: gray; cursor: not-allowed; }
+    #bouton_deconnexion { background: red; }
+    #copyBtn { background: #007bff; }
+    input { width: 90%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; text-align: center; }
+    a { text-decoration: none; color: #007bff; margin: 0 10px; font-weight: bold; }
 </style>
 </head>
 <body>
 
-<div class="box">
+<div class="boite">
     <h2>مرحبا بك</h2>
-    <p>الرصيد الحالي: <span id="balance">0</span> درهم</p>
-    <a href="done.html">المهام المنجزة</a>
+    <p>الرصيد الحالي: <span id="equilibre">0</span> درهم</p>
+    <p>عدد المحالين: <span id="referrals">0</span></p>
+    <a href="fait.html">المهام المنجزة</a>
     <a href="sahb.html">سحب المال</a>
 </div>
 
-<div class="box">
+<div class="boite">
+    <h3>🎁 مهمة الاحالة - 50 درهم</h3>
+    <p>اربح 50 درهم على كل صديق يتسجل من الرابط ديالك</p>
+    <input type="text" id="refLink" readonly>
+    <button id="copyBtn" onclick="copyLink()">نسخ الرابط</button>
+</div>
+
+<div class="boite">
     <h3>مهمة مشاهدة الفيديو - 20 درهم</h3>
     <video id="video" width="100%" controls>
         <source src="video.mp4" type="video/mp4">
+        المتصفح ديالك ما كيدعمش الفيديو
     </video>
-    <div id="timer">01:00:00</div>
-    <button id="finishBtn" onclick="finishTask()" disabled>انتظر حتى ينتهي العداد</button>
-    <button id="logoutBtn" onclick="logout()">تسجيل الخروج</button>
+    <div id="minuteur">01:00:00</div>
+    <button id="bouton_de_finition" onclick="finirTache()" disabled>انتظر حتى ينتهي العداد</button>
+    <button id="bouton_deconnexion" onclick="deconnexion()">تسجيل الخروج</button>
 </div>
 
 <script type="module">
@@ -37,60 +48,54 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = { /* حط الكونفيغ ديالك هنا */ };
+    const firebaseConfig = {
+      // حط هنا الكونفيغ ديالك ديال Firebase
+    };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
     let userId = null;
-    let currentMoney = 20;
-    let timeLeft = 60 * 60; 
-    let timerInterval;
+    let argentActuel = 20;
+    let tempsRestant = 60 * 60; // ساعة
+    let intervalMinuteur;
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             userId = user.uid;
             const docRef = doc(db, "users", userId);
             const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                document.getElementById("balance").innerText = docSnap.data().balance || 0;
+            let data = docSnap.data() || {};
+            
+            document.getElementById("equilibre").innerText = data.balance || 0;
+            document.getElementById("referrals").innerText = data.referrals ? data.referrals.length : 0;
+
+            // توليد الرابط ديال الاحالة
+            const siteURL = "https://benjyt803-ui.github.io/online-work-morocco/Register.html";
+            document.getElementById("refLink").value = `${siteURL}?ref=${userId}`;
+
+            // التحقق من الاحالة
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('ref');
+            if(ref && ref !== userId && !data.referredBy){
+                await setDoc(docRef, { referredBy: ref }, {merge: true});
+                await setDoc(doc(db, "users", ref), {
+                    balance: increment(50),
+                    referrals: arrayUnion(userId)
+                }, {merge: true});
             }
-            startTimer();
+            
+            commencerMinuteur();
         } else {
             window.location.href = "Login.html";
         }
     });
 
-    function startTimer(){
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            let h = Math.floor(timeLeft / 3600);
-            let m = Math.floor((timeLeft % 3600) / 60);
-            let s = timeLeft % 60;
-            document.getElementById("timer").innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-            if(timeLeft <= 0){
-                clearInterval(timerInterval);
-                document.getElementById("finishBtn").disabled = false;
-                document.getElementById("finishBtn").innerText = "اضغط لاستلام 20 درهم";
-            }
-        }, 1000);
-    }
-
-    async function saveEarnings(){
-        const docRef = doc(db, "users", userId);
-        const date = new Date().toLocaleString("ar-MA");
-        try {
-            await setDoc(docRef, {
-                balance: increment(currentMoney),
-                doneTasks: arrayUnion({task: "مشاهدة فيديو", money: currentMoney, date: date})
-            }, {merge: true});
-            alert(`مبروك! تم اضافة ${currentMoney} درهم لرصيدك`);
-            location.reload();
-        } catch (error) {
-            alert("خطأ: " + error.message);
-        }
-    }
-
-    window.finishTask = function(){
-        clearInterval(timerInterval);
-        saveEarnings();
+    function commencerMinuteur(){
+        intervalMinuteur = setInterval(() => {
+            tempsRestant--;
+            let h = Math.floor(tempsRestant / 3600);
+            let m = Math.floor((tempsRestant % 3600) / 60);
+            let s = tempsRestant % 60;
+            document.getElementById("minuteur").innerText = `${String(h).padStart(2,'0')}:${String(m).padStart
