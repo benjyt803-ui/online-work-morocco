@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة المعلنين</title>
+<style>
+    body { font-family: Arial; background: #f8f9fa; text-align: center; padding: 30px 20px; margin:0 }
+    .box { background: white; padding: 30px; border-radius: 15px; max-width: 500px; margin: 20px auto; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+    h1 { color: #007bff; }
+    input, textarea { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; }
+    .price { background: #e7f3ff; padding: 15px; border-radius: 10px; margin: 15px 0; font-size: 18px; color: #007bff; }
+    button { width: 95%; padding: 16px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; margin-top: 10px; font-weight:bold }
+    button:hover { background: #218838; }
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h1>📢 اضف حملتك الاعلانية</h1>
+    <p>خلي الاف الناس يشوفو المنتج ديالك</p>
+    
+    <input type="text" placeholder="اسم الشركة">
+    <input type="text" placeholder="رابط الفيديو من يوتيوب">
+    <textarea placeholder="وصف المنتج" rows="3"></textarea>
+    
+    <div class="price">
+        💰 التسعيرة: 30 درهم لكل 1000 مشاهدة<br>
+        انت تعطي: 20 درهم للمستخدم | تربح: 10 درهم
+    </div>
+    
+    <input type="number" placeholder="عدد المشاهدات المطلوبة" value="1000">
+    <p>المجموع: <span id="total">30000</span> درهم</p>
+    
+    <button onclick="payer()">ادفع الان عبر PayPal</button>
+    <button onclick="window.location='index.html'" style="background:gray">رجوع</button>
+</div>
+
+<script>
+document.querySelector('input[type=number]').addEventListener('input', function(){
+    let views = this.value;
+    document.getElementById('total').innerText = views * 30;
+})
+
+function payer(){
+    alert("من بعد الدفع غادي نتواصلو معاك باش نطلقو الحملة ديالك");
+    // هنا غادي نحطو كود PayPal الحقي
+}
+</script>
+</body>
+</html>
