@@ -3,31 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Travail en ligne Maroc</title>
+<title>Nos Services - Travail en ligne Maroc</title>
+<script src="https://www.paypal.com/sdk/js?client-id=SB3D9XW8WQY5C&currency=USD"></script>
 <style>
-body{font-family:Arial;background:#f5f5f5;margin:0;text-align:center}
-header{background:#0070ba;color:white;padding:60px 20px}
-.btn{background:#ffcc00;color:#000;padding:15px 30px;text-decoration:none;border-radius:8px;font-size:18px;font-weight:bold;display:inline-block;margin-top:20px}
-.btn:hover{background:#ffb700}
-footer{background:#333;color:white;text-align:center;padding:15px;margin-top:50px}
+body{font-family:Arial;background:#f5f5f5;margin:0}
+header{background:#0070ba;color:white;padding:20px;text-align:center}
+nav a{color:white;margin:0 10px;text-decoration:none;font-weight:bold}
+.container{max-width:800px;margin:20px auto;padding:20px}
+.service-card{border:1px solid #ddd;padding:20px;margin:20px 0;border-radius:8px;text-align:center;background:white;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+.prix{color:#0070ba;font-size:22px;font-weight:bold;margin:10px 0;}
+h2{text-align:center}
+footer{background:#333;color:white;text-align:center;padding:15px;margin-top:30px}
 </style>
 </head>
 <body>
 <header>
-<h1>Online Work Morocco</h1>
-<p>Vos services digitaux professionnels au Maroc</p>
-<a href="services.html" class="btn">Voir nos Services</a>
+<h1>Travail en ligne Maroc</h1>
+<nav><a href="index.html">Accueil</a> <a href="services.html">Services</a></nav>
 </header>
 
-<main style="padding:40px 20px">
-<h2>Nos Spécialités</h2>
-<p>Montage Vidéo | Design Logo | Gestion Réseaux Sociaux</p>
-<p>Paiement sécurisé avec PayPal</p>
+<main class="container">
+<h2>Nos services</h2>
+
+<div class="service-card">
+<h3>Montage Vidéo Professionnel</h3>
+<p>Montage TikTok, Reels, YouTube avec effets pro</p>
+<p class="prix">Prix : 25 USD</p>
+<div id="bouton-PayPal-1"></div>
+</div>
+
+<div class="service-card">
+<h3>Conception de logo</h3>
+<p>Logo professionnel pour votre marque en 24h</p>
+<p class="prix">Prix : 15 USD</p>
+<div id="bouton-PayPal-2"></div>
+</div>
+
+<div class="service-card">
+<h3>Gestion Réseaux Sociaux</h3>
+<p>Gestion Facebook, Instagram, TikTok</p>
+<p class="prix">Prix : 50 USD / mois</p>
+<div id="bouton-PayPal-3"></div>
+</div>
+
 </main>
 
-<footer><p>© 2026 Travail en ligne Maroc</p></footer>
-</body>
-</html>
+<script>
+paypal.Buttons({createOrder:function(data,actions){return actions.order.create({purchase_units:[{amount:{value:'25.00'}}]})},onApprove:function(data,actions){return actions.order.capture().then(function(details){alert('Paiement réussi! Merci '+details.payer.name.given_name)})}}).render('#bouton-PayPal-1');
+
+paypal.Buttons({createOrder:function(data,actions){return actions.order.create({purchase_units:[{amount:{value:'15.00'}}]})},onApprove:function(data,actions){return actions.order.capture().then(function(details){alert('Paiement réussi! Merci '+details.payer.name.given_name)})}}).render('#bouton-PayPal-2');
+
+paypal.Buttons({createOrder:function(data,actions){return actions.order.create({purchase_units:[{amount:{value:'50.00'}}]})},onApprove:function(data,actions){return actions.order.capture().then(function(details){alert('Paiement réussi! Merci '+details.payer.name.given_name)})}}).render('#bouton-PayPal-3');
+</script>
+
 <footer><p>© 2026 Travail en ligne Maroc</p></footer>
 </body>
 </html>
