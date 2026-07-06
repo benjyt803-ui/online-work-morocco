@@ -129,10 +129,20 @@
       }
     }, 1000);
   }
-
-  async function saveEarnings(){
+async function saveEarnings(){
+    console.log("UserID:", userId);
+    console.log("Money:", currentMoney);
     const docRef = doc(db, "users", userId);
-    await setDoc(docRef, {balance: increment(currentMoney)}, {merge: true});
+    
+    try {
+        await setDoc(docRef, {balance: increment(currentMoney)}, {merge: true});
+        alert(`مبروك! تم اضافة ${currentMoney} درهم لرصيدك`);
+        location.reload();
+    } catch (error) {
+        alert("خطأ: " + error.message);
+        console.error(error);
+    }
+}
     alert(`مبروك! تم اضافة ${currentMoney} درهم لرصيدك`);
     location.reload();
   }
