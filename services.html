@@ -1,72 +1,48 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nos Services - Travail en ligne Maroc</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=AVrEK49ptrG8NLIU-LimKhvzfevBtilBRG2eK-Li9cT7hzoevGLv9QESnvh1KRMO2NtDZ-6Z_d_YGExj&currency=USD"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nos Services</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://www.paypal.com/sdk/js?client-id=AVrEK49ptrG8NLIU-LimKhvzfevBtilBRG2eK-Li9cT7hzoevGLv9QESnvh1KRMO2NtDZ-6Z_d_YGExj&currency=USD"></script>
+<style>
+.service-card{border:1px solid #ddd;padding:20px;margin:20px 0;border-radius:10px}
+.price{color:#0070ba;font-size:20px;font-weight:bold}
+</style>
 </head>
 <body>
-    <header>
-        <h1>Travail en ligne Maroc</h1>
-        <nav>
-            <a href="index.html">Accueil</a>
-            <a href="services.html">Services</a>
-            <a href="Contact.html">Contact</a>
-        </nav>
-    </header>
+<header><h1>Travail en ligne Maroc</h1>
+<nav><a href="index.html">Accueil</a> <a href="services.html">Services</a> <a href="Contact.html">Contact</a></nav></header>
 
-    <main class="container">
-        <h2>Nos Services</h2>
-        
-        <div class="service-card">
-            <h3>Montage Vidéo Professionnel</h3>
-            <p class="price">Prix: 25 USD</p>
-            <div id="paypal-button-1"></div>
-        </div>
+<main class="container">
+<h2>Nos Services</h2>
 
-        <div class="service-card">
-            <h3>Design Logo</h3>
-            <p class="price">Prix: 15 USD</p>
-            <div id="paypal-button-2"></div>
-        </div>
+<div class="service-card">
+<h3>Montage Vidéo Professionnel</h3>
+<p class="price">Prix: 25 USD</p>
+<div id="paypal-button-1"></div>
+</div>
 
-        <div class="service-card">
-            <h3>Traduction FR-AR-EN</h3>
-            <p class="price">Prix: 10 USD</p>
-            <div id="paypal-button-3"></div>
-        </div>
-    </main>
+<div class="service-card">
+<h3>Design Logo</h3>
+<p class="price">Prix: 15 USD</p>
+<div id="paypal-button-2"></div>
+</div>
 
-    <footer>
-        <p>© 2026 Travail en ligne Maroc</p>
-    </footer>
+<div class="service-card">
+<h3>Traduction FR-AR-EN</h3>
+<p class="price">Prix: 10 USD</p>
+<div id="paypal-button-3"></div>
+</div>
 
-    <script>
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: '25.00' } }]
-                });
-            }
-        }).render('#paypal-button-1');
+</main>
+<footer><p>© 2026 Travail en ligne Maroc</p></footer>
 
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: '15.00' } }]
-                });
-            }
-        }).render('#paypal-button-2');
-
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: '10.00' } }]
-                });
-            }
-        }).render('#paypal-button-3');
-    </script>
+<script>
+paypal.Buttons({createOrder:function(d,a){return a.order.create({purchase_units:[{amount:{value:'25.00'}}]})}}).render('#paypal-button-1');
+paypal.Buttons({createOrder:function(d,a){return a.order.create({purchase_units:[{amount:{value:'15.00'}}]})}}).render('#paypal-button-2');
+paypal.Buttons({createOrder:function(d,a){return a.order.create({purchase_units:[{amount:{value:'10.00'}}]})}}).render('#paypal-button-3');
+</script>
 </body>
 </html>
