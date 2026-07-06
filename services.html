@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nos Services - Online Work Morocco</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AVrEK49ptrG8NLIU-LimKhvzfevBtilBRG2eK-Li9cT7hzoevGLv9QESnvh1KRMO2NtDZ-6Z_d_YGExj&currency=USD"></script>
 </head>
 <body>
     <header>
@@ -17,24 +16,20 @@
             <a href="Contact.html">Contact</a>
         </nav>
     </header>
-
     <main class="container">
         <h2>Nos Services</h2>
-        
         <div class="service-card">
             <h3>Montage Vidéo Professionnel</h3>
             <p class="price">Prix: 25 USD</p>
             <p>Montage de votre vidéo jusqu'à 5 minutes avec effets et sous-titres.</p>
             <div id="paypal-button-1"></div>
         </div>
-
         <div class="service-card">
             <h3>Design Logo</h3>
             <p class="price">Prix: 15 USD</p>
             <p>Création de logo professionnel en 24h.</p>
             <div id="paypal-button-2"></div>
         </div>
-
         <div class="service-card">
             <h3>Traduction FR-AR-EN</h3>
             <p class="price">Prix: 10 USD / 1000 mots</p>
@@ -42,35 +37,13 @@
             <div id="paypal-button-3"></div>
         </div>
     </main>
-
     <footer>
         <p>© 2026 Online Work Morocco. Tous droits réservés.</p>
     </footer>
-
     <script>
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: '25.00' } }]
-                });
-            }
-        }).render('#paypal-button-1');
-
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: '15.00' } }]
-                });
-            }
-        }).render('#paypal-button-2');
-
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: '10.00' } }]
-                });
-            }
-        }).render('#paypal-button-3');
+        paypal.Buttons({ createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '25.00' } }] }); } }).render('#paypal-button-1');
+        paypal.Buttons({ createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '15.00' } }] }); } }).render('#paypal-button-2');
+        paypal.Buttons({ createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '10.00' } }] }); } }).render('#paypal-button-3');
     </script>
 </body>
 </html>
