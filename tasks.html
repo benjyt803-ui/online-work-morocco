@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -10,20 +11,24 @@
   .balance-box{background:#fff;padding:15px;border-radius:15px;margin-bottom:15px;text-align:center;border:2px solid #00aaff}
   .balance-box h4{margin:0;color:#666;font-size:14px}
   .balance-box p{margin:5px 0;font-size:24px;font-weight:700;color:#00aaff}
-  .task-box{background:white;padding:25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);margin-bottom:15px;text-align:center;cursor:pointer}
+  .task-box{background:white;padding:25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);margin-bottom:15px;text-align:center;cursor:pointer;transition:0.3s}
+  .task-box:hover{transform:scale(1.02)}
   .task-box h3{margin:0;color:#00aaff;font-size:18px}
   .task-box p{font-size:28px;font-weight:700;color:#333;margin:10px 0}
   button{width:100%;padding:14px;background:#00aaff;color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px}
   .logout{background:#ff4444;margin-top:20px}
   .timer{font-size:36px;font-weight:700;color:#00aaff;text-align:center;margin:20px 0}
   .hidden{display:none}
+  .video-box{width:100%;border-radius:15px;margin:15px 0;max-height:250px;object-fit:cover}
+  .progress{height:8px;background:#eee;border-radius:10px;overflow:hidden;margin:10px 0}
+  .progress-bar{height:100%;background:#00aaff;width:0%;transition:0.5s}
 </style>
 </head>
 <body>
 
 <div class="header">
   <h2>طريقة سهلة للعمل من المنزل</h2>
-  <p style="font-size:13px">المهمة الوظيفية: اكمال مهام اونلاين</p>
+  <p style="font-size:13px">المهمة: مشاهدة محتوى تحفيزي للعمل</p>
 </div>
 
 <div class="balance-box">
@@ -33,23 +38,29 @@
 
 <div id="chooseTask">
   <div class="task-box" onclick="startTask(1,20)">
-    <h3>1 ساعة</h3>
+    <h3>🎬 1 ساعة</h3>
     <p>20 درهم</p>
   </div>
   <div class="task-box" onclick="startTask(2,50)">
-    <h3>2 ساعات</h3>
+    <h3>🎬 2 ساعات</h3>
     <p>50 درهم</p>
   </div>
   <div class="task-box" onclick="startTask(5,120)">
-    <h3>5 ساعات</h3>
+    <h3>🎬 5 ساعات</h3>
     <p>120 درهم</p>
   </div>
 </div>
 
 <div id="workArea" class="hidden">
   <div class="task-box">
+    <h3>جاري المهمة... استمر في المشاهدة</h3>
+    <video class="video-box" id="workVideo" controls autoplay loop muted playsinline>
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    
     <h3>الوقت المتبقي</h3>
-    <div class="timer" id="timer">00:00:00</div>
+    <div class="timer" id="timer">01:00:00</div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
     <button onclick="finishTask()">انهاء المهمة واستلام الارباح</button>
   </div>
 </div>
@@ -59,7 +70,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyA6fo63qKcstFX8xFhGUD5wIRprabL0qso",
@@ -75,6 +86,7 @@
   const db = getFirestore(app);
   let userId = null;
   let timeLeft = 0;
+  let totalTime = 0;
   let timerInterval;
   let currentMoney = 0;
 
@@ -94,9 +106,11 @@
 
   window.startTask = function(hours, money){
     currentMoney = money;
-    timeLeft = hours * 3600;
+    totalTime = hours * 3600;
+    timeLeft = totalTime;
     document.getElementById('chooseTask').classList.add('hidden');
     document.getElementById('workArea').classList.remove('hidden');
+    document.getElementById('workVideo').play();
     
     timerInterval = setInterval(() => {
       let h = Math.floor(timeLeft / 3600);
@@ -104,6 +118,10 @@
       let s = timeLeft % 60;
       document.getElementById('timer').innerText = 
         `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      
+      let progress = ((totalTime - timeLeft) / totalTime) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+      
       timeLeft--;
       if(timeLeft < 0){
         clearInterval(timerInterval);
