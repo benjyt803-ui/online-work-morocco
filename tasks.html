@@ -49,7 +49,12 @@
     import { getFirestore, doc, getDoc, setDoc, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      // حط هنا الكونفيغ ديالك ديال Firebase
+      apiKey: "حط_هنا",
+      authDomain: "حط_هنا",
+      projectId: "حط_هنا",
+      storageBucket: "حط_هنا",
+      messagingSenderId: "حط_هنا",
+      appId: "حط_هنا"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -98,4 +103,18 @@
             let h = Math.floor(tempsRestant / 3600);
             let m = Math.floor((tempsRestant % 3600) / 60);
             let s = tempsRestant % 60;
-            document.getElementById("minuteur").innerText = `${String(h).padStart(2,'0')}:${String(m).padStart
+            document.getElementById("minuteur").innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            if(tempsRestant <= 0){
+                clearInterval(intervalMinuteur);
+                document.getElementById("bouton_de_finition").disabled = false;
+                document.getElementById("bouton_de_finition").innerText = "اضغط لاستلام 20 درهم";
+            }
+        }, 1000);
+    }
+
+    async function sauvegarderGains(){
+        const docRef = doc(db, "users", userId);
+        const date = new Date().toLocaleString("ar-MA");
+        await setDoc(docRef, {
+            balance: increment(argentActuel),
+            doneTasks: arrayUnion({task: "مشاهدة فيديو", money: argent
